@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Debug bool  `yaml:"debug"`
 	Http  Http  `yaml:"http"`
 	Mysql Mysql `yaml:"mysql"`
 	Redis Redis `yaml:"redis"`

@@ -7,16 +7,33 @@ import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/httpserver"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/service"
+	"go.uber.org/fx"
 )
 
 func main() {
-	cfg, err := config.Phase()
-	if err != nil {
+	// 实现fx模块注入，简化、复用模块应用
+	app := fx.New(
+		fx.Provide(
+			config.Phase,
+			mysql.New,
+			redis.New,
+			service.New,
+			controller.New,
+		),
+		fx.Invoke(
+			httpserver.Run,
+		),
+	)
+	app.Run()
+	/*
+		cfg, err := config.Phase()
+		if err != nil {
 
-	}
-	db := mysql.New(cfg)
-	rdb := redis.New(cfg)
-	service := service.New(cfg, db, rdb)
-	ctl := controller.New(service)
-	httpserver.Run(cfg, ctl)
+		}
+		db := mysql.New(cfg)
+		rdb := redis.New(cfg)
+		service := service.New(cfg, db, rdb)
+		ctl := controller.New(service)
+		httpserver.Run(cfg, ctl)
+	*/
 }
