@@ -8,6 +8,7 @@ import (
 type User struct {
 	gorm.Model
 	Username string `gorm:"size:32;unique_index"`
+	Password string `gorm:"size:64;unique_index"`
 }
 type UserModel struct {
 	db  *gorm.DB
