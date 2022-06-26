@@ -33,16 +33,9 @@ func New(cfg *config.Config) *gorm.DB {
 		if err != nil {
 			panic(errors.New("Cannot  connect to mysql"))
 		}
-		if err = db.AutoMigrate(&model.User{}); err != nil {
+		if err = db.AutoMigrate(&model.User{}, &model.IpInfo{}, &model.Api{}); err != nil {
 			panic(err)
 		}
-		if err = db.AutoMigrate(&model.IpInfo{}); err != nil {
-			panic(err)
-		}
-		if err = db.AutoMigrate(&model.Api{}); err != nil {
-			panic(err)
-		}
-
 	})
 	return db
 }
