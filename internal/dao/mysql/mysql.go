@@ -36,6 +36,13 @@ func New(cfg *config.Config) *gorm.DB {
 		if err = db.AutoMigrate(&model.User{}); err != nil {
 			panic(err)
 		}
+		if err = db.AutoMigrate(&model.IpInfo{}); err != nil {
+			panic(err)
+		}
+		if err = db.AutoMigrate(&model.Api{}); err != nil {
+			panic(err)
+		}
+
 	})
 	return db
 }

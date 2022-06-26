@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type BadManInfo struct {
 	gorm.Model
-	IpList []string
+	IpList []string `gorm:"size:256"`
 }
 type BadWord struct {
-	Word string
+	Word string `gorm:"size:256"`
 }
