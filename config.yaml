@@ -12,3 +12,7 @@ redis:
   host: wuhongyu.ltd
   port: 6379
   db: 0
+kafka:
+  enable: false
+  brokers:
+    - localhost:9092

@@ -11,6 +11,7 @@ type Config struct {
 	Http  Http  `yaml:"http"`
 	Mysql Mysql `yaml:"mysql"`
 	Redis Redis `yaml:"redis"`
+	Kafka Kafka `yaml:"kafka"`
 }
 
 type Http struct {
@@ -30,6 +31,10 @@ type Redis struct {
 	Database int    `yaml:"database"`
 	Password string `yaml:"password"`
 	Enable   int    `yaml:"enable"`
+}
+type Kafka struct {
+	Enable  bool     `yaml:"enable"`
+	Brokers []string `yaml:"brokers"`
 }
 
 var (
