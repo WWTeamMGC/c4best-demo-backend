@@ -24,6 +24,7 @@ func main() {
 			httpserver.Run,
 		),
 	)
+
 	app.Run()
 	/*
 		cfg, err := config.Phase()
