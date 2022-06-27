@@ -3,13 +3,12 @@ http:
   host: 0.0.0.0
   port: 8080
 mysql:
-  host: 127.0.0.1
+  host: wuhongyu.ltd
   port: 3306
   user: root
-  password: 123456
-  database: user
+  password: 1056646612
+  database: db2
 redis:
-  host: redis
+  host: wuhongyu.ltd
   port: 6379
   db: 0
-  enable: 0

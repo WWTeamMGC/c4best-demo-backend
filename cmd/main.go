@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	// 实现fx模块注入，简化、复用模块应用
+	//实现fx模块注入，简化、复用模块应用
 	app := fx.New(
 		fx.Provide(
 			config.Phase,
@@ -26,15 +26,16 @@ func main() {
 	)
 
 	app.Run()
-	/*
-		cfg, err := config.Phase()
-		if err != nil {
 
-		}
-		db := mysql.New(cfg)
-		rdb := redis.New(cfg)
-		service := service.New(cfg, db, rdb)
-		ctl := controller.New(service)
-		httpserver.Run(cfg, ctl)
-	*/
+	//cfg, err := config.Phase()
+	//if err != nil {
+	//
+	//}
+	//db := mysql.New(cfg)
+	//rdb := redis.New(cfg)
+	//s := service.New(cfg, db, rdb)
+	//ctl := controller.New(s)
+	//
+	//httpserver.Run(cfg, ctl)
+
 }

@@ -18,8 +18,7 @@ var (
 	once    sync.Once
 )
 
-func New(cfg *config.Config, db *gorm.DB,
-	rds *redis.Client) *Service {
+func New(cfg *config.Config, db *gorm.DB, rds *redis.Client) *Service {
 	once.Do(func() {
 		service = &Service{
 			cfg: cfg,
@@ -27,5 +26,6 @@ func New(cfg *config.Config, db *gorm.DB,
 			rds: rds,
 		}
 	})
+	go WatchRedis()
 	return service
 }

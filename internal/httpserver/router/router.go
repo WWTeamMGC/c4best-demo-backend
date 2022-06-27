@@ -7,6 +7,17 @@ import (
 )
 
 func InitRouter(r *gin.Engine, ctl *controller.Controller) {
-	apiRouter := r.Group("/user")
-	apiRouter.GET("/info", middleware.CORSMiddleware(), ctl.Info)
+	{
+		UserapiRouter := r.Group("/user")
+		UserapiRouter.GET("/info", middleware.CORSMiddleware(), ctl.Info)
+		UserapiRouter.POST("/SignUp", middleware.CORSMiddleware(), ctl.SignUpHandler)
+		UserapiRouter.POST("/SignIn", middleware.CORSMiddleware(), ctl.SignInHandler)
+	}
+
+	{
+		CountapiRouter := r.Group("/Count")
+		CountapiRouter.GET("/detail", middleware.CORSMiddleware(), middleware.JWTAuthMiddleware(), ctl.CountDetailHandler)
+		CountapiRouter.GET("/Total", middleware.CORSMiddleware(), middleware.JWTAuthMiddleware(), ctl.CountTotalandler)
+		CountapiRouter.GET("/Figure", middleware.CORSMiddleware(), middleware.JWTAuthMiddleware(), ctl.CountFigureHandler)
+	}
 }
