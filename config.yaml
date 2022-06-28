@@ -16,3 +16,4 @@ kafka:
   enable: false
   brokers:
     - localhost:9092
+  topic: test

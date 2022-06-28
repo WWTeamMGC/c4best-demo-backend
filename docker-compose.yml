@@ -5,6 +5,8 @@ services:
     depends_on:
       - redis
       - mysql
+      - zookeeper
+      - kafka
     ports:
       - "8080:8080"
     volumes:
@@ -12,6 +14,8 @@ services:
     links:
       - redis
       - mysql
+      - -zookeeper
+      - kafka
   redis:
     image: redis
   mysql:
@@ -21,3 +25,15 @@ services:
       - MYSQL_DATABASE=123456
       - MYSQL_USER=root
       - MYSQL_PASSWORD=123456
+  zookeeper:
+    image: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092

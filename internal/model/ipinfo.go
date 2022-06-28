@@ -6,7 +6,7 @@ import (
 )
 
 type IpInfo struct {
-	ID      uint64 `gorm:"primaryKey"`
+	gorm.Model
 	IpAddr  string `gorm:"index"`
 	Count   uint64 `gorm:"type:int"`
 	Address string `gorm:"size:256"`

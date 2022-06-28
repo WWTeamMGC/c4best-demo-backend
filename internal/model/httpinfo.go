@@ -6,5 +6,5 @@ type HttpInfo struct {
 	Method   string
 	UrlPath  string
 	Header   []map[string]interface{}
-	body     string
+	body     []byte
 }

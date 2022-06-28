@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/controller"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/kafka"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/mysql"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/httpserver"
@@ -20,6 +21,7 @@ func main() {
 			redis.New,
 			service.New,
 			controller.New,
+			kafka.NewConsumer,
 		),
 		fx.Invoke(
 			httpserver.Run,
