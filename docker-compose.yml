@@ -1,0 +1,23 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  c4best:
+    build: .
+    depends_on:
+      - redis
+      - mysql
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config.yaml:/root/config.yaml
+    links:
+      - redis
+      - mysql
+  redis:
+    image: redis
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=123456
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=123456
