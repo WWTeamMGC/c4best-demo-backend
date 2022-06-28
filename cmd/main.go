@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	//实现fx模块注入，简化、复用模块应用
 	app := fx.New(
 		fx.Provide(

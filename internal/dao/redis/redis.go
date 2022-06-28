@@ -2,7 +2,6 @@ package redis
 
 import (
 	"context"
-	"fmt"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
 	"github.com/go-redis/redis/v8"
 	"strings"
@@ -24,7 +23,7 @@ func New(config *config.Config) *redis.Client {
 			Password: config.Redis.Password,
 			DB:       config.Redis.Database,
 		})
-		fmt.Println(rdb)
+
 		var err error
 		for i := 0; i < 3; i++ {
 			if _, err = rdb.Ping(context.TODO()).Result(); err != nil {

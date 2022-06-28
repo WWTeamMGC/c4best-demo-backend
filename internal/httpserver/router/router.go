@@ -7,6 +7,7 @@ import (
 )
 
 func InitRouter(r *gin.Engine, ctl *controller.Controller) {
+
 	{
 		UserapiRouter := r.Group("/user")
 		UserapiRouter.GET("/info", middleware.CORSMiddleware(), ctl.Info)

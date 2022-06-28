@@ -40,7 +40,7 @@ var (
 func Phase() (*Config, error) {
 	once.Do(func() {
 		cfg = &Config{}
-		configfile, err := os.ReadFile("../config.yaml")
+		configfile, err := os.ReadFile("./config.yaml")
 		if err != nil {
 			panic(err)
 		}

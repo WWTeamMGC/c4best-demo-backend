@@ -10,6 +10,10 @@ type ResponseData struct {
 	Msg  interface{} `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
+type TimeAndCount struct {
+	Time  string `json:"time"`
+	Count string `json:"value"`
+}
 
 func (c ResCode) Msg() string {
 	msg, ok := codeMsgMap[c]
@@ -38,5 +42,15 @@ func ResponseSuccess(c *gin.Context, data interface{}) {
 		Code: CodeSuccess,
 		Msg:  CodeSuccess.Msg(),
 		Data: data,
+	})
+}
+
+func ResponseTimeAndCount(c *gin.Context, timestr, count string) {
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":  CodeSuccess,
+		"msg":   CodeSuccess.Msg(),
+		"time":  timestr,
+		"count": count,
 	})
 }

@@ -23,12 +23,14 @@ func GetToTalCount() (res string, err error) {
 		return res, nil
 	}
 }
-func GetCountBytime() (res []string, err error) {
+func GetCountBytime() (timeList, countList string, err error) {
 
-	if res, err = redis.GetCountByTime(); err != nil {
-		return nil, err
+	if timeList, countList, err = redis.GetTimeAndCountList(); err != nil {
+		fmt.Println(err)
+		return
 	} else {
-		return res, nil
+
+		return
 	}
 }
 
