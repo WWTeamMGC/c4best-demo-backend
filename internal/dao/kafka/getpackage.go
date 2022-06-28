@@ -6,15 +6,8 @@ import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
 )
 
-// PhasePackage 解析kafka队列中拿出来的数据
-func PhasePackage(cfg config.Config) {
-	topics, err := consumer.Topics()
-	if err != nil {
-
-	}
-	for topic := range topics {
-		go func() {}()
-	}
+// InitKafkaConsumer 初始化kafkaConsumer
+func InitKafkaConsumer(cfg config.Config) {
 	partitionConsumer, err := consumer.ConsumePartition(cfg.Kafka.Topic, 0, sarama.OffsetNewest) // 根据topic取到所有的分区
 	if err != nil {
 		panic("error get consumer")
@@ -27,9 +20,6 @@ func PhasePackage(cfg config.Config) {
 		fmt.Println("error get partition consumer", err)
 	}
 	//循环等待接受消息.
-
-}
-func ReadMsg(partitionConsumer *sarama.PartitionConsumer) {
 	for {
 		select {
 		//接收消息通道和错误通道的内容.
@@ -39,4 +29,9 @@ func ReadMsg(partitionConsumer *sarama.PartitionConsumer) {
 			fmt.Println(err.Err)
 		}
 	}
+}
+
+// PhasePackage 解析kafka队列中拿出来的数据
+func PhasePackage() {
+
 }

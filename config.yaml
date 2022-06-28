@@ -13,7 +13,7 @@ redis:
   port: 6379
   db: 0
 kafka:
-  enable: false
+  enable: true
   brokers:
-    - localhost:9092
+    - wuhongyu.ltd:9092
   topic: test

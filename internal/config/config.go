@@ -35,6 +35,7 @@ type Redis struct {
 type Kafka struct {
 	Enable  bool     `yaml:"enable"`
 	Brokers []string `yaml:"brokers"`
+	Topic   string   `yaml:"topic"`
 }
 
 var (
