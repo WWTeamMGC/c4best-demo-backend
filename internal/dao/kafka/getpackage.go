@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/service"
 )
 
 // InitKafkaConsumer 初始化kafkaConsumer
-func InitKafkaConsumer(cfg config.Config) {
+func InitKafkaConsumer(cfg *config.Config, s *service.Service) {
 	partitionConsumer, err := consumer.ConsumePartition(cfg.Kafka.Topic, 0, sarama.OffsetNewest) // 根据topic取到所有的分区
 	if err != nil {
 		panic("error get consumer")
@@ -24,14 +26,14 @@ func InitKafkaConsumer(cfg config.Config) {
 		select {
 		//接收消息通道和错误通道的内容.
 		case msg := <-partitionConsumer.Messages():
-			fmt.Println("msg offset: ", msg.Offset, " partition: ", msg.Partition, " timestrap: ", msg.Timestamp.Format("2006-Jan-02 15:04"), " value: ", string(msg.Value))
+			go func() {
+				// TODO 未处理错误,应该把错误放在logger
+				redis.SetTotalCount()
+				s.KfkChan <- msg.Value
+				fmt.Println("msg offset: ", msg.Offset, " partition: ", msg.Partition, " timestrap: ", msg.Timestamp.Format("2006-Jan-02 15:04"), " value: ", string(msg.Value))
+			}()
 		case err := <-partitionConsumer.Errors():
 			fmt.Println(err.Err)
 		}
 	}
-}
-
-// PhasePackage 解析kafka队列中拿出来的数据
-func PhasePackage() {
-
 }

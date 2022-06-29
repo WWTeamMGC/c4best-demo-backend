@@ -6,7 +6,6 @@ import (
 )
 
 func GetToTalCount() (res string, err error) {
-
 	ctx := rdb.Context()
 
 	rdb.Get(ctx, "totalCount")
@@ -71,6 +70,14 @@ func PullCountAndTime(res string) (err error) {
 		if _, err = pip.Exec(ctx); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+func SetTotalCount() error {
+	ctx := rdb.Context()
+	_, err := rdb.Incr(ctx, "totalCount").Result()
+	if err != nil {
+		return err
 	}
 	return nil
 }

@@ -19,11 +19,11 @@ func main() {
 			config.Phase,
 			mysql.New,
 			redis.New,
-			service.New,
 			controller.New,
 			kafka.NewConsumer,
 		),
 		fx.Invoke(
+			service.New,
 			httpserver.Run,
 		),
 	)
