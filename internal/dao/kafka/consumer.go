@@ -13,7 +13,7 @@ var (
 )
 
 // NewConsumer 新建一个消费者
-func NewConsumer(cfg *config.Config) *sarama.Consumer {
+func NewConsumer(cfg *config.Config) sarama.Consumer {
 	if !cfg.Kafka.Enable {
 		return nil
 	}
@@ -27,5 +27,5 @@ func NewConsumer(cfg *config.Config) *sarama.Consumer {
 			panic(err)
 		}
 	})
-	return &consumer
+	return consumer
 }

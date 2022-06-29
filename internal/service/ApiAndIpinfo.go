@@ -12,7 +12,7 @@ func (s *Service) PhasePackage() {
 			HttpInfo := &model.HttpInfo{}
 			err := json.Unmarshal(bytes, HttpInfo)
 			if err != nil {
-				// TODO err写入日志
+				//TODO err写入日志
 				return
 			}
 			//存入Api
