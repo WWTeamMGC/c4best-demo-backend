@@ -5,6 +5,6 @@ type HttpInfo struct {
 	ClientIP string
 	Method   string
 	UrlPath  string
-	Header   []map[string]interface{}
-	body     []byte
+	Header   string
+	body     string
 }

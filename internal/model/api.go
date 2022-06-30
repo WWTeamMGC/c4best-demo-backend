@@ -7,7 +7,7 @@ import (
 
 type Api struct {
 	gorm.Model
-	Router     string   `gorm:"size:256"`
+	Url        string   `gorm:"size:256"`
 	Count      uint64   `gorm:"type:int"`
 	IpInfoList []IpInfo `gorm:"many2many:ipinfo"`
 }
@@ -33,9 +33,9 @@ func (a *ApiModel) GetApi(id uint64) (*Api, error) {
 }
 
 // GetApiByName 根据Api.Router查找Api
-func (a *ApiModel) GetApiByName(router string) (*Api, error) {
+func (a *ApiModel) GetApiByName(url string) (*Api, error) {
 	var api Api
-	if err := a.db.Where("router = ?", router).First(&api).Error; err != nil {
+	if err := a.db.Where("url = ?", url).First(&api).Error; err != nil {
 		return nil, err
 	}
 	return &api, nil

@@ -31,7 +31,6 @@ func main() {
 
 	cfg, err := config.Phase()
 	if err != nil {
-
 	}
 	db := mysql.New(cfg)
 	rdb := redis.New(cfg)

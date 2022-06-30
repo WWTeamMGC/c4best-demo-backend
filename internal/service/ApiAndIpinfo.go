@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 )
 
@@ -11,13 +12,14 @@ func (s *Service) PhasePackage() {
 		for bytes := range s.KfkChan {
 			HttpInfo := &model.HttpInfo{}
 			err := json.Unmarshal(bytes, HttpInfo)
+			fmt.Println(HttpInfo)
 			if err != nil {
 				//TODO err写入日志
 				return
 			}
 			//存入Api
 			api := &model.Api{
-				Router: HttpInfo.UrlPath,
+				Url: HttpInfo.UrlPath,
 				IpInfoList: []model.IpInfo{
 					{
 						IpAddr: HttpInfo.ClientIP,
@@ -34,7 +36,7 @@ func (s *Service) PhasePackage() {
 				Url:    HttpInfo.UrlPath,
 				ApiList: []model.Api{
 					{
-						Router: HttpInfo.UrlPath,
+						Url: HttpInfo.UrlPath,
 					},
 				},
 			}
