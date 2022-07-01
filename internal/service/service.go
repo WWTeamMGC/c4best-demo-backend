@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/Shopify/sarama"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"sync"
@@ -14,8 +15,8 @@ type Service struct {
 	rds      *redis.Client
 	kafka    sarama.Consumer
 	KfkChan  chan []byte
-	BadIp    map[string]uint64
-	BadWords map[string]uint64
+	BadIp    []model.BadIp
+	BadWords []model.BadWords
 }
 
 var (
@@ -23,7 +24,7 @@ var (
 	once    sync.Once
 )
 
-func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consumer, badIp, badWords map[string]uint64) *Service {
+func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consumer) *Service {
 	once.Do(func() {
 		service = &Service{
 			cfg:      cfg,
@@ -31,10 +32,12 @@ func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consum
 			rds:      rds,
 			kafka:    kafka,
 			KfkChan:  make(chan []byte, 1000),
-			BadIp:    badIp,
-			BadWords: badWords,
+			BadIp:    []model.BadIp{},
+			BadWords: []model.BadWords{},
 		}
 	})
+	//第一次初始化Bad名单
+	service.FlushBadIp()
 	go WatchRedis()
 	//初始化KafkaConsumer
 	go service.InitKafkaConsumer(cfg, kafka)
