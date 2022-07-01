@@ -20,7 +20,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	CountapiRouter := r.Group("/Count")
 	CountapiRouter.Use(middleware.JWTAuthMiddleware())
 	{
-		CountapiRouter.GET("/Detail", ctl.CountDetailHandler)
+		CountapiRouter.GET("/detail", ctl.CountDetailHandler)
 		CountapiRouter.GET("/Total", ctl.CountTotalandler)
 		CountapiRouter.GET("/Figure", ctl.CountFigureHandler)
 	}
@@ -30,19 +30,16 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	//BadApiRouter.Use()
 	{
 		//查询BadIP和BadWords
-		BadApiRouter.POST("/Ip", ctl.BadIPIsExist)
-		BadApiRouter.POST("/Words", ctl.BadWordsIsExist)
+		BadApiRouter.POST("/Ip", ctl.GetBadIPList)
+		BadApiRouter.POST("/Words", ctl.GetBadWordsList)
 	}
 
-	//IP/Words过滤查询接口，非此web端接口
-	BadApiIQRouter := r.Group("/BadApiIQ")
-	//BadApiIQRouter.Use()
-	{
-		//返回0即表示IP/Words被封,返回1表示未被封
-		BadApiIQRouter.POST("/Ip", ctl.BadIPIsExist)
-		BadApiIQRouter.POST("/Words", ctl.BadWordsIsExist)
-	}
-	BadmanapiRouter := r.Group("/Badman")
-	BadmanapiRouter.Use(middleware.JWTAuthMiddleware())
-	//BadmanapiRouter.GET("/Detail", ctl.BadmanDetailHandlaer)
+	//	//IP/Words过滤查询接口，非此web端接口
+	//	BadApiIQRouter := r.Group("/BadApiIQ")
+	//	//BadApiIQRouter.Use()
+	//	{
+	//		//返回0即表示IP/Words被封,返回1表示未被封
+	//		BadApiIQRouter.POST("/Ip", ctl.BadIPIsExist)
+	//		BadApiIQRouter.POST("/Words", ctl.BadWordsIsExist)
+	//	}
 }
