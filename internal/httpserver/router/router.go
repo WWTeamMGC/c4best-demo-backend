@@ -20,7 +20,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	CountapiRouter := r.Group("/Count")
 	CountapiRouter.Use(middleware.JWTAuthMiddleware())
 	{
-		CountapiRouter.GET("/detail", ctl.CountDetailHandler)
+		CountapiRouter.GET("/Detail", ctl.CountDetailHandler)
 		CountapiRouter.GET("/Total", ctl.CountTotalandler)
 		CountapiRouter.GET("/Figure", ctl.CountFigureHandler)
 	}
@@ -42,4 +42,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 		BadApiIQRouter.POST("/Ip", ctl.BadIPIsExist)
 		BadApiIQRouter.POST("/Words", ctl.BadWordsIsExist)
 	}
+	BadmanapiRouter := r.Group("/Badman")
+	BadmanapiRouter.Use(middleware.JWTAuthMiddleware())
+	//BadmanapiRouter.GET("/Detail", ctl.BadmanDetailHandlaer)
 }

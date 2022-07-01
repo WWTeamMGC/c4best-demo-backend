@@ -27,6 +27,11 @@ func NewIpInfoModel(db *gorm.DB, rdb *redis.Client) *IpInfoModel {
 
 // CreateIpInfo 创建APiRouter
 func (a *IpInfoModel) CreateIpInfo(info *IpInfo) (id uint64, err error) {
+	u := new(IpInfo)
+	a.db.Where("ip_addr=?", info.IpAddr).First(u)
+	if u.IpAddr != "" {
+		return
+	}
 	err = a.db.Model(&IpInfo{}).Save(info).Error
 	return uint64(info.ID), err
 }

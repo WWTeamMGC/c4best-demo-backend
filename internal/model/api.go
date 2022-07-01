@@ -43,6 +43,11 @@ func (a *ApiModel) GetApiByName(url string) (*Api, error) {
 
 // CreateApi 创建APiRouter
 func (a *ApiModel) CreateApi(api *Api) (id uint64, err error) {
+	var u = new(Api)
+	a.db.Where("url=?", api.Url).First(u)
+	if u.Url != "" {
+		return
+	}
 	err = a.db.Model(&Api{}).Save(api).Error
 	return uint64(api.ID), err
 }

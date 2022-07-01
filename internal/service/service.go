@@ -23,16 +23,19 @@ var (
 	once    sync.Once
 )
 
-func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consumer, badIp, badWords map[string]uint64) *Service {
+func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consumer,
+
+//badIp, badWords map[string]uint64
+) *Service {
 	once.Do(func() {
 		service = &Service{
-			cfg:      cfg,
-			db:       db,
-			rds:      rds,
-			kafka:    kafka,
-			KfkChan:  make(chan []byte, 1000),
-			BadIp:    badIp,
-			BadWords: badWords,
+			cfg:     cfg,
+			db:      db,
+			rds:     rds,
+			kafka:   kafka,
+			KfkChan: make(chan []byte, 1000),
+			//	BadIp:    badIp,
+			//BadWords: badWords,
 		}
 	})
 	go WatchRedis()

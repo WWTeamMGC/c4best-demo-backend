@@ -10,10 +10,11 @@ type ResponseData struct {
 	Msg  interface{} `json:"msg"`
 	Data interface{} `json:"data,omitempty"`
 }
-type TimeAndCount struct {
-	Time  string `json:"time"`
-	Count string `json:"value"`
-}
+
+//type TimeAndCount struct {
+//	Time  string `json:"time"`
+//	Count string `json:"value"`
+//}
 
 func (c ResCode) Msg() string {
 	msg, ok := codeMsgMap[c]

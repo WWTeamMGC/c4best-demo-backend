@@ -1,9 +1,19 @@
 package redis
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
+	"strconv"
 	"time"
 )
+
+const Prefix = "singleCount"
+
+type TimeAndCount struct {
+	Time  string `json:"time"`
+	Count string `json:"value"`
+}
 
 func GetToTalCount() (res string, err error) {
 	ctx := rdb.Context()
@@ -18,59 +28,35 @@ func GetToTalCount() (res string, err error) {
 
 }
 
-func GetTimeList() (res []string, err error) {
+func GetTimeAndCountList() (res []string, err error) {
 	ctx := rdb.Context()
-	if res, err = rdb.LRange(ctx, "countByTime", 0, 24*60).Result(); err != nil {
-		if res, err = rdb.LRange(ctx, "timeList", 0, 24*60).Result(); err != nil {
-			return nil, err
-		} else {
-			return res, nil
-		}
-	}
-	//TODO something
-	return nil, nil
-}
-func GetCountList() (res []string, err error) {
-	ctx := rdb.Context()
-	if res, err = rdb.LRange(ctx, "countList", 0, 24*60).Result(); err != nil {
-		return nil, err
-	} else {
-		return res, nil
-	}
-}
-func GetTimeAndCountList() (timeList, countList string, err error) {
-	ctx := rdb.Context()
-	pip := rdb.Pipeline()
-	pip.LRange(ctx, "timeList", 0, 24*60)
-	pip.LRange(ctx, "countList", 0, 24*60)
 
-	cm, err := pip.Exec(ctx)
+	res, err = rdb.LRange(ctx, "timeAndCount", 0, 24*60).Result()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	//for _, v := range cm {
-	//	//fmt.Println(v.String())
-	//}
 
-	return cm[1].String()[26:], cm[0].String()[25:], nil
+	return res, nil
 }
 
 func PullCountAndTime(res string) (err error) {
 	ctx := rdb.Context()
-	timestr := time.Now().String()
-	req := fmt.Sprintf("%s %s", res, timestr)
-	if err = rdb.LPush(ctx, "countByTime", req).Err(); err != nil {
-		pip := rdb.Pipeline()
-		timestr := time.Now()
-		reqTime := fmt.Sprintf("%d:%d:%d", timestr.Hour(), timestr.Minute(), timestr.Second())
-		fmt.Println(reqTime)
-		pip.LPush(ctx, "countList", reqTime)
-		pip.LPush(ctx, "timeList", res)
-		if _, err = pip.Exec(ctx); err != nil {
-			return err
-		}
+
+	timestr := time.Now()
+	reqTime := fmt.Sprintf("%d:%d:%d", timestr.Hour(), timestr.Minute(), timestr.Second())
+	var timeAndCount = TimeAndCount{
+		Time:  reqTime,
+		Count: res,
 	}
+	tc, _ := json.Marshal(timeAndCount)
+	//fmt.Println(string(tc))
+	err = rdb.LPush(ctx, "timeAndCount", string(tc)).Err()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	return nil
 }
 func SetTotalCount() error {
@@ -79,5 +65,28 @@ func SetTotalCount() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+func SetSingleCount(ipInfo *model.IpInfo) (err error) {
+	ctx := rdb.Context()
+	pip := rdb.Pipeline()
+	key := Prefix + ipInfo.Url
+	rdb.Incr(ctx, key)
+	countstr, _ := rdb.HGet(ctx, ipInfo.IpAddr, ipInfo.Url).Result()
+	count, _ := strconv.Atoi(countstr)
+	pip.HSet(ctx, ipInfo.IpAddr, ipInfo.Url, count+1)
+	countstr, _ = rdb.HGet(ctx, ipInfo.Url, ipInfo.IpAddr).Result()
+	count, _ = strconv.Atoi(countstr)
+	pip.HSet(ctx, ipInfo.Url, ipInfo.IpAddr, count+1)
+	_, err = pip.Exec(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//
+
+	a, _ := rdb.HGetAll(ctx, ipInfo.IpAddr).Result()
+	fmt.Println(a)
 	return nil
 }

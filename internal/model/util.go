@@ -5,7 +5,9 @@ import "gorm.io/gorm"
 // BadManInfo 阻止IP
 type BadManInfo struct {
 	gorm.Model
-	IpList []string `gorm:"many2many:iplist"`
+	IpList  string
+	PCOrNot bool
+	Address string
 }
 
 // BadWord 敏感词

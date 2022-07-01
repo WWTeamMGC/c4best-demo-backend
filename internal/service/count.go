@@ -23,9 +23,20 @@ func GetToTalCount() (res string, err error) {
 		return res, nil
 	}
 }
-func GetCountBytime() (timeList, countList string, err error) {
 
-	if timeList, countList, err = redis.GetTimeAndCountList(); err != nil {
+//func GetCountBytime() (timeList, countList string, err error) {
+//
+//	if timeList, countList, err = redis.GetTimeAndCountList(); err != nil {
+//		fmt.Println(err)
+//		return
+//	} else {
+//
+//		return
+//	}
+//}
+func GetCountBytime() (res []string, err error) {
+
+	if res, err = redis.GetTimeAndCountList(); err != nil {
 		fmt.Println(err)
 		return
 	} else {
@@ -33,7 +44,6 @@ func GetCountBytime() (timeList, countList string, err error) {
 		return
 	}
 }
-
 func WatchRedis() {
 
 	for {
@@ -44,6 +54,7 @@ func WatchRedis() {
 		err = redis.PullCountAndTime(res)
 		if err != nil {
 			fmt.Println(err)
+
 		}
 		time.Sleep(60 * time.Second)
 	}

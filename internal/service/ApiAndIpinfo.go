@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 )
 
@@ -12,7 +12,8 @@ func (s *Service) PhasePackage() {
 		for bytes := range s.KfkChan {
 			HttpInfo := &model.HttpInfo{}
 			err := json.Unmarshal(bytes, HttpInfo)
-			fmt.Println(HttpInfo)
+			//fmt.Println(HttpInfo)
+
 			if err != nil {
 				//TODO err写入日志
 				return
@@ -43,6 +44,7 @@ func (s *Service) PhasePackage() {
 			infoModel := model.NewIpInfoModel(s.db, s.rds)
 			//TODO 处理错误
 			infoModel.CreateIpInfo(ipinfo)
+			redis.SetSingleCount(ipinfo)
 		}
 	}
 }
