@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
-	"strconv"
 	"time"
 )
 
@@ -67,17 +66,46 @@ func SetTotalCount() error {
 	}
 	return nil
 }
+
 func SetSingleCount(ipInfo *model.IpInfo) (err error) {
 	ctx := rdb.Context()
 	pip := rdb.Pipeline()
-	key := Prefix + ipInfo.Url
-	rdb.Incr(ctx, key)
-	countstr, _ := rdb.HGet(ctx, ipInfo.IpAddr, ipInfo.Url).Result()
-	count, _ := strconv.Atoi(countstr)
-	pip.HSet(ctx, ipInfo.IpAddr, ipInfo.Url, count+1)
-	countstr, _ = rdb.HGet(ctx, ipInfo.Url, ipInfo.IpAddr).Result()
-	count, _ = strconv.Atoi(countstr)
-	pip.HSet(ctx, ipInfo.Url, ipInfo.IpAddr, count+1)
+	//key := Prefix + ipInfo.Url
+	var urlAndCount = map[string]int{}
+	ans, _ := rdb.HGet(ctx, "urlAndCount", ipInfo.IpAddr).Result()
+	err = json.Unmarshal([]byte(ans), &urlAndCount)
+
+	if count, ok := urlAndCount[ipInfo.Url]; !ok {
+		urlAndCount[ipInfo.Url] = 1
+	} else {
+		urlAndCount[ipInfo.Url] = count + 1
+	}
+	field, _ := json.Marshal(urlAndCount)
+	pip.HSet(ctx, "urlAndCount", ipInfo.IpAddr, field)
+
+	var ipAndCount = map[string]int{}
+	ans2, _ := rdb.HGet(ctx, "ipAndCount", ipInfo.Url).Result()
+	err = json.Unmarshal([]byte(ans2), &ipAndCount)
+
+	if count, ok := ipAndCount[ipInfo.IpAddr]; !ok {
+		ipAndCount[ipInfo.IpAddr] = 1
+	} else {
+		ipAndCount[ipInfo.IpAddr] = count + 1
+	}
+
+	field2, _ := json.Marshal(ipAndCount)
+	fmt.Println(string(field2))
+	pip.HSet(ctx, "ipAndCount", ipInfo.Url, field2)
+
+	//pip.HIncrBy(ctx, "singleCount", ipInfo.Url, 1)
+	////rdb.Incr(ctx, key)
+	////countstr, _ := rdb.HGet(ctx, ipInfo.IpAddr, ipInfo.Url).Result()
+	////count, _ := strconv.Atoi(countstr)
+	//pip.HIncrBy(ctx, ipInfo.IpAddr, ipInfo.Url, 1)
+	////countstr, _ = rdb.HGet(ctx, ipInfo.Url, ipInfo.IpAddr).Result()
+	////count, _ = strconv.Atoi(countstr)
+	//pip.HIncrBy(ctx, ipInfo.Url, ipInfo.IpAddr, 1)
+
 	_, err = pip.Exec(ctx)
 	if err != nil {
 		fmt.Println(err)
@@ -86,7 +114,31 @@ func SetSingleCount(ipInfo *model.IpInfo) (err error) {
 
 	//
 
-	a, _ := rdb.HGetAll(ctx, ipInfo.IpAddr).Result()
-	fmt.Println(a)
+	//a, _ := rdb.HGetAll(ctx, ipInfo.IpAddr).Result()
+	//fmt.Println(a)
 	return nil
+}
+
+func GetAllRouterAndCount() (res map[string]string, err error) {
+	ctx := rdb.Context()
+	res, err = rdb.HGetAll(ctx, "singleCount").Result()
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return res, err
+}
+
+//拿到单个API被哪些IP调用或单个IP调用了哪些API   prefix即为需要查看的
+func GetSingleCount(prefix, req string) (res string, err error) {
+	ctx := rdb.Context()
+	fmt.Println(prefix+"AndCount", req)
+	if res, err = rdb.HGet(ctx, prefix+"AndCount", req).Result(); err != nil {
+		fmt.Println(err)
+		return
+	} else {
+		fmt.Println(res)
+		return
+	}
+
 }

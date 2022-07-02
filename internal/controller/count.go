@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -9,6 +10,7 @@ import (
 func (ctl *Controller) CountDetailHandler(c *gin.Context) {
 
 	res, err := service.GetAllRouterAndCount()
+	fmt.Println(res)
 	if err != nil {
 		ResponseError(c, CodeServerBusy)
 		return
@@ -16,7 +18,31 @@ func (ctl *Controller) CountDetailHandler(c *gin.Context) {
 	ResponseSuccess(c, res)
 	return
 }
-func (ctl *Controller) CountTotalandler(c *gin.Context) {
+func (ctl *Controller) SingleApiCountHandler(c *gin.Context) {
+	api := c.Param("api")
+
+	res, err := service.SingleCount("ip", "/"+api)
+	if err != nil {
+		fmt.Println(err)
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, res)
+}
+func (ctl *Controller) SingleipCountHandler(c *gin.Context) {
+	ip := c.Param("ip")
+
+	res, err := service.SingleCount("url", ip)
+	if err != nil {
+		fmt.Println(err)
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	ResponseSuccess(c, res)
+
+}
+
+func (ctl *Controller) CountTotalHandler(c *gin.Context) {
 	res, err := service.GetToTalCount()
 
 	if err != nil {

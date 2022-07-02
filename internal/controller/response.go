@@ -45,13 +45,3 @@ func ResponseSuccess(c *gin.Context, data interface{}) {
 		Data: data,
 	})
 }
-
-func ResponseTimeAndCount(c *gin.Context, timestr, count string) {
-
-	c.JSON(http.StatusOK, gin.H{
-		"code":  CodeSuccess,
-		"msg":   CodeSuccess.Msg(),
-		"time":  timestr,
-		"count": count,
-	})
-}
