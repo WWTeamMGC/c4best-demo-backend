@@ -34,6 +34,10 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 		//查询BadIP和BadWords
 		BadApiRouter.POST("/Ip", ctl.GetBadIPList)
 		BadApiRouter.POST("/Words", ctl.GetBadWordsList)
+		BadApiRouter.POST("/setIp", ctl.SetBadIP)
+		BadApiRouter.POST("/setWords", ctl.SetBadWords)
+		BadApiRouter.POST("/delIp", ctl.DeleteBadIP)
+		BadApiRouter.POST("/delWords", ctl.DeleteBadWords)
 	}
 
 	//	//IP/Words过滤查询接口，非此web端接口

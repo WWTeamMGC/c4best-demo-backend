@@ -1,68 +1,73 @@
 package controller
 
 import (
-	"encoding/json"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-//// BadIPIsExist 查询BadIP是否存在
-//func (ctl *Controller) BadIPIsExist(c *gin.Context) {
-//	var badIp string
-//	err := c.ShouldBind(&badIp)
-//	if err != nil {
-//		//TODO 处理错误
-//		return
-//	}
-//	if _, ok := ctl.service.BadIp[badIp]; !ok {
-//		c.JSON(http.StatusOK, 1)
-//		return
-//	}
-//	c.JSON(http.StatusOK, 0)
-//}
-//
-//// BadWordsIsExist 查询BadWords是否存在
-//func (ctl *Controller) BadWordsIsExist(c *gin.Context) {
-//	var badWords string
-//	err := c.ShouldBind(&badWords)
-//	if err != nil {
-//		//TODO 处理错误
-//		return
-//	}
-//	if _, ok := ctl.service.BadIp[badWords]; !ok {
-//		c.JSON(http.StatusOK, 1)
-//		return
-//	}
-//	c.JSON(http.StatusOK, 0)
-//}
-
-// GetBadIPList 返回BadIPList
-func (ctl Controller) GetBadIPList(c *gin.Context) {
-	BadIPList, err := json.Marshal(ctl.service.BadIp)
+// SetBadIP 设置BadIP
+func (ctl *Controller) SetBadIP(c *gin.Context) {
+	ip := c.PostForm("badip")
+	badip := &model.BadIp{
+		Ip:    ip,
+		Count: 0,
+	}
+	err := ctl.service.SetBadIP(badip)
 	if err != nil {
 		//TODO 处理错误
 		return
 	}
-	c.JSON(http.StatusOK, BadIPList)
+	ctl.service.FlushBadIp()
+}
+
+// SetBadWords 设置BadWords
+func (ctl *Controller) SetBadWords(c *gin.Context) {
+	words := c.PostForm("badwords")
+	badwords := &model.BadWords{
+		Word:  words,
+		Count: 0,
+	}
+	err := ctl.service.SetBadWords(badwords)
+	if err != nil {
+		//TODO 处理错误
+		return
+	}
+	ctl.service.FlushBadWords()
+}
+
+// GetBadIPList 返回BadIPList
+func (ctl *Controller) GetBadIPList(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"BadIPList": ctl.service.BadIp})
 }
 
 // GetBadWordsList 返回BadWordsList
-func (ctl Controller) GetBadWordsList(c *gin.Context) {
-	BadWordsList, err := json.Marshal(ctl.service.BadWords)
-	if err != nil {
-		//TODO 处理错误
-		return
-	}
-	c.JSON(http.StatusOK, BadWordsList)
+func (ctl *Controller) GetBadWordsList(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"BadWordsList": ctl.service.BadWords})
 }
 
-// GetBadIPList 返回BadIPList
-func (ctl Controller) DeleteBadIP(c *gin.Context) {
-	var BadIP string
-	err := c.ShouldBind(&BadIP)
+// DeleteBadIP 删除BadIP
+func (ctl *Controller) DeleteBadIP(c *gin.Context) {
+	ip := c.PostForm("badip")
+	err := ctl.service.DeleteBadIP(ip)
 	if err != nil {
 		//TODO 处理错误
+		c.JSON(http.StatusOK, gin.H{"Msg": err})
 		return
 	}
+	ctl.service.FlushBadIp()
+	c.JSON(http.StatusOK, gin.H{"Msg": "删除成功"})
+}
 
+// DeleteBadWords 删除BadWords
+func (ctl *Controller) DeleteBadWords(c *gin.Context) {
+	words := c.PostForm("badwords")
+	err := ctl.service.DeleteBadWords(words)
+	if err != nil {
+		//TODO 处理错误
+		c.JSON(http.StatusOK, gin.H{"Msg": err})
+		return
+	}
+	ctl.service.FlushBadWords()
+	c.JSON(http.StatusOK, gin.H{"Msg": "删除成功"})
 }

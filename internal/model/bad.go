@@ -11,6 +11,7 @@ type BadIp struct {
 
 // BadWords 敏感词
 type BadWords struct {
+	gorm.Model
 	Word  string `gorm:"size:256"`
 	Count uint64 `gorm:"type:int"`
 }

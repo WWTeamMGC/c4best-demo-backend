@@ -2,28 +2,53 @@ package service
 
 import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/mysql"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 )
 
 // FlushBadIp 初始化Bad名单InitBad
 func (s *Service) FlushBadIp() {
-	//var service.BadIp []&model.BadIp{}
+	service.BadIp = []string{}
 	ipList, err := mysql.GetAllBadIp()
 	if err != nil {
 		return
 	}
-	service.BadIp = append(service.BadIp, ipList...)
+	for _, v := range ipList {
+		service.BadIp = append(service.BadIp, v.Ip)
+	}
 }
 
-// ReFlushBadWords 初始化Bad名单
-func (s *Service) ReFlushBadWords() {
-	//var service.BadIp []&model.BadIp{}
+// FlushBadWords 初始化BadWords名单
+func (s *Service) FlushBadWords() {
+	service.BadWords = []string{}
 	wordsList, err := mysql.GetAllBadWords()
 	if err != nil {
-		//TODO 处理错误
 		return
 	}
-	service.BadWords = append(service.BadWords, wordsList...)
+	for _, v := range wordsList {
+		service.BadWords = append(service.BadWords, v.Word)
+	}
 }
-func (s *Service) DeleteBadIP(str string) {
 
+// SetBadIP 设置BadIP
+func (s *Service) SetBadIP(badip *model.BadIp) error {
+	err := s.db.Model(&model.BadIp{}).Save(badip).Error
+	return err
+}
+
+// SetBadWords 设置BadWords
+func (s *Service) SetBadWords(badwords *model.BadWords) error {
+	err := s.db.Model(&model.BadWords{}).Save(badwords).Error
+	return err
+}
+
+// DeleteBadIP 删除BadIP
+func (s *Service) DeleteBadIP(str string) error {
+	err := s.db.Unscoped().Where("ip=?", str).Delete(&model.BadIp{}).Error
+	return err
+}
+
+// DeleteBadWords 删除BadWords
+func (s *Service) DeleteBadWords(str string) error {
+	err := s.db.Unscoped().Where("word=?", str).Delete(&model.BadWords{}).Error
+	return err
 }
