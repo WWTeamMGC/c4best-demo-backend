@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/service"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -83,6 +85,12 @@ func (ctl *Controller) CountFigureHandler(c *gin.Context) {
 		return
 	}
 
-	ResponseSuccess(c, res)
+	b := []redis.TimeAndCount{}
+	for _, v := range res {
+		a := redis.TimeAndCount{}
+		json.Unmarshal([]byte(v), &a)
+		b = append(b, a)
+	}
+	ResponseSuccess(c, b)
 	return
 }
