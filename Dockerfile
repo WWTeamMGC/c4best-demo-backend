@@ -1,15 +1,18 @@
 FROM golang:1.17 as builder
+MAINTAINER c4best
 
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.cn,direct
 ##
 ## Build
 ##
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download && go mod verify
 
 COPY . .
-RUN CGO_ENABLED=0 go build -v -o c4best_demo ./cmd/
+COPY --from=build /app/config.yaml /config.yaml
+RUN GOOS=linux CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-s -w" -installsuffix cgo -o app main.go
 
 ##
 ## Build
@@ -17,7 +20,6 @@ RUN CGO_ENABLED=0 go build -v -o c4best_demo ./cmd/
 FROM alpine:3.14
 
 WORKDIR /root/
-RUN apk add --no-cache ffmpeg
 COPY --from=builder /app/c4best_demo ./c4best_demo
 
 EXPOSE 8080

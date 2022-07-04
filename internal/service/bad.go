@@ -6,15 +6,16 @@ import (
 )
 
 // FlushBadIp 初始化Bad名单InitBad
-func (s *Service) FlushBadIp() {
+func (s *Service) FlushBadIp() error {
 	service.BadIp = []string{}
 	ipList, err := mysql.GetAllBadIp()
 	if err != nil {
-		return
+		return err
 	}
 	for _, v := range ipList {
 		service.BadIp = append(service.BadIp, v.Ip)
 	}
+	return nil
 }
 
 // FlushBadWords 初始化BadWords名单
