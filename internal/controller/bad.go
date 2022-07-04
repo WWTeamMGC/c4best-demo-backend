@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/gin-gonic/gin"
+	"io"
 	"net/http"
 )
 
@@ -76,8 +78,11 @@ func (ctl *Controller) GetBadWordsList(c *gin.Context) {
 
 // DeleteBadIP 删除BadIP
 func (ctl *Controller) DeleteBadIP(c *gin.Context) {
-	ip := c.PostForm("badip")
-	err := ctl.service.DeleteBadIP(ip)
+	body := c.Request.Body
+	all, err := io.ReadAll(body)
+	badip := &BadIPListRsp{}
+	json.Unmarshal(all, &badip)
+	err = ctl.service.DeleteBadIP(badip.Ip)
 	if err != nil {
 		//TODO 处理错误
 		c.JSON(http.StatusOK, gin.H{"Msg": err})
