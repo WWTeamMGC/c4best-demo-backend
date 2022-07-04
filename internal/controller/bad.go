@@ -41,6 +41,10 @@ type BadIPListRsp struct {
 	PcMp    string `json:"pc_mp"`
 	Address string `json:" address"`
 }
+type BadWordsListRsp struct {
+	Badwords string `json:"badwords"`
+	Delete   string `json:"delete"`
+}
 
 // GetBadIPList 返回BadIPList
 func (ctl *Controller) GetBadIPList(c *gin.Context) {
@@ -59,7 +63,15 @@ func (ctl *Controller) GetBadIPList(c *gin.Context) {
 
 // GetBadWordsList 返回BadWordsList
 func (ctl *Controller) GetBadWordsList(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"BadWordsList": ctl.service.BadWords})
+	var badwordslist []BadWordsListRsp
+	for i := range ctl.service.BadWords {
+		badword := BadWordsListRsp{
+			Badwords: ctl.service.BadWords[i],
+			Delete:   "",
+		}
+		badwordslist = append(badwordslist, badword)
+	}
+	c.JSON(http.StatusOK, gin.H{"badwordslist": badwordslist})
 }
 
 // DeleteBadIP 删除BadIP
