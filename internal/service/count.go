@@ -14,8 +14,8 @@ import (
 //	}
 //
 //}
-func GetAllRouterAndCount() (res map[string]string, err error) {
-	if res, err = redis.GetAllRouterAndCount(); err != nil {
+func CountDetail(prefix string) (res map[string]string, err error) {
+	if res, err = redis.CountDetail(prefix); err != nil {
 		return nil, err
 	} else {
 		return res, nil

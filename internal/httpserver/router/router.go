@@ -20,10 +20,11 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	CountapiRouter := r.Group("/Count")
 	//CountapiRouter.Use(middleware.JWTAuthMiddleware())
 	{
-		CountapiRouter.GET("/detail", ctl.CountDetailHandler)
+		CountapiRouter.GET("/ApiDetail", ctl.CountApiDetailHandler)
+		CountapiRouter.GET("/IpDetail", ctl.CountIpDetailHandler)
 		CountapiRouter.GET("/Total", ctl.CountTotalHandler)
 		CountapiRouter.GET("/Api/:api", ctl.SingleApiCountHandler)
-		CountapiRouter.GET("/ip/:ip", ctl.SingleipCountHandler)
+		CountapiRouter.GET("/Ip/:ip", ctl.SingleipCountHandler)
 		CountapiRouter.GET("/Figure", ctl.CountFigureHandler)
 	}
 

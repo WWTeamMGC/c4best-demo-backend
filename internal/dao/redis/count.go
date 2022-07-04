@@ -47,8 +47,10 @@ func PullCountAndTime(res string) (err error) {
 		Time:  reqTime,
 		Count: res,
 	}
+
 	tc, _ := json.Marshal(timeAndCount)
 	//fmt.Println(string(tc))
+	fmt.Printf("%#v", tc)
 	err = rdb.LPush(ctx, "timeAndCount", string(tc)).Err()
 	if err != nil {
 		fmt.Println(err)
@@ -73,7 +75,8 @@ func SetSingleCount(ipInfo *model.IpInfo) (err error) {
 	var urlAndCount = map[string]int{}
 	ans, _ := rdb.HGet(ctx, "urlAndCount", ipInfo.IpAddr).Result()
 	err = json.Unmarshal([]byte(ans), &urlAndCount)
-
+	pip.HIncrBy(ctx, "singleApiCount", ipInfo.Url, 1)
+	pip.HIncrBy(ctx, "singleIpCount", ipInfo.IpAddr, 1)
 	if count, ok := urlAndCount[ipInfo.Url]; !ok {
 		urlAndCount[ipInfo.Url] = 1
 	} else {
@@ -118,9 +121,10 @@ func SetSingleCount(ipInfo *model.IpInfo) (err error) {
 	return nil
 }
 
-func GetAllRouterAndCount() (res map[string]string, err error) {
+func CountDetail(prefix string) (res map[string]string, err error) {
 	ctx := rdb.Context()
-	res, err = rdb.HGetAll(ctx, "singleCount").Result()
+	s := fmt.Sprintf("single%sCount", prefix)
+	res, err = rdb.HGetAll(ctx, s).Result()
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
