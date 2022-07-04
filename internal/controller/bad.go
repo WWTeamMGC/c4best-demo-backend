@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/gin-gonic/gin"
+	"io"
 	"net/http"
 )
 
@@ -41,6 +43,10 @@ type BadIPListRsp struct {
 	PcMp    string `json:"pc_mp"`
 	Address string `json:" address"`
 }
+type BadWordsListRsp struct {
+	Badwords string `json:"badwords"`
+	Delete   string `json:"delete"`
+}
 
 // GetBadIPList 返回BadIPList
 func (ctl *Controller) GetBadIPList(c *gin.Context) {
@@ -59,13 +65,24 @@ func (ctl *Controller) GetBadIPList(c *gin.Context) {
 
 // GetBadWordsList 返回BadWordsList
 func (ctl *Controller) GetBadWordsList(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"BadWordsList": ctl.service.BadWords})
+	var badwordslist []BadWordsListRsp
+	for i := range ctl.service.BadWords {
+		badword := BadWordsListRsp{
+			Badwords: ctl.service.BadWords[i],
+			Delete:   "",
+		}
+		badwordslist = append(badwordslist, badword)
+	}
+	c.JSON(http.StatusOK, gin.H{"badwordslist": badwordslist})
 }
 
 // DeleteBadIP 删除BadIP
 func (ctl *Controller) DeleteBadIP(c *gin.Context) {
-	ip := c.PostForm("badip")
-	err := ctl.service.DeleteBadIP(ip)
+	body := c.Request.Body
+	all, err := io.ReadAll(body)
+	badip := &BadIPListRsp{}
+	json.Unmarshal(all, &badip)
+	err = ctl.service.DeleteBadIP(badip.Ip)
 	if err != nil {
 		//TODO 处理错误
 		c.JSON(http.StatusOK, gin.H{"Msg": err})
