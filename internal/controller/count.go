@@ -38,10 +38,10 @@ func (ctl *Controller) CountIpDetailHandler(c *gin.Context) {
 		return
 	}
 
-	var r []UrlAndCount
+	var r []IPAndCount
 	for k, v := range res {
-		var b UrlAndCount
-		b.Url = k
+		var b IPAndCount
+		b.IP = k
 		c, _ := strconv.Atoi(v)
 		b.Count = c
 		r = append(r, b)
