@@ -29,7 +29,6 @@ func GetToTalCount() (res string, err error) {
 
 func GetTimeAndCountList() (res []string, err error) {
 	ctx := rdb.Context()
-
 	res, err = rdb.LRange(ctx, "timeAndCount", 0, 24*60).Result()
 	if err != nil {
 		fmt.Println(err)

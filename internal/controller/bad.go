@@ -36,9 +36,25 @@ func (ctl *Controller) SetBadWords(c *gin.Context) {
 	ctl.service.FlushBadWords()
 }
 
+type BadIPListRsp struct {
+	Ip      string `json:"ip"`
+	PcMp    string `json:"pc_mp"`
+	Address string `json:" address"`
+}
+
 // GetBadIPList 返回BadIPList
 func (ctl *Controller) GetBadIPList(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"BadIPList": ctl.service.BadIp})
+	var badiplist []BadIPListRsp
+	for i := range ctl.service.BadIp {
+		badip := BadIPListRsp{
+			Ip:      ctl.service.BadIp[i],
+			PcMp:    "aaa",
+			Address: "lll",
+		}
+		badiplist = append(badiplist, badip)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"badiplist": badiplist})
 }
 
 // GetBadWordsList 返回BadWordsList

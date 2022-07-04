@@ -6,7 +6,6 @@ import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/service"
 	jwt "github.com/WWTeamMGC/c4best-demo-backend/pkg"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -27,21 +26,8 @@ func (ctl *Controller) Info(c *gin.Context) {
 func (ctl *Controller) SignUpHandler(c *gin.Context) {
 	// 1. 获取参数和参数校验
 	p := new(model.User)
-	if err := c.ShouldBindJSON(p); err != nil {
-		// 请求参数有误，直接返回响应
-		fmt.Println(err)
-		// 判断err是不是validator.ValidationErrors 类型
-
-		errs, ok := err.(validator.ValidationErrors)
-		if !ok {
-			ResponseError(c, CodeInvalidParam)
-			return
-		}
-
-		ResponseErrorWithMsg(c, CodeInvalidParam, errs)
-		return
-
-	}
+	p.Username = c.PostForm("username")
+	p.Password = c.PostForm("password")
 	if len(p.Username) < 8 {
 		ResponseError(c, CodeUserNameShort)
 		return
@@ -61,11 +47,8 @@ func (ctl *Controller) SignUpHandler(c *gin.Context) {
 
 func (ctl *Controller) SignInHandler(c *gin.Context) {
 	p := new(model.User)
-	if err := c.ShouldBindJSON(p); err != nil {
-		fmt.Println(err)
-		ResponseError(c, CodeInvalidParam)
-		return
-	}
+	p.Username = c.PostForm("username")
+	p.Password = c.PostForm("password")
 	if err := service.SignIn(p); err != nil {
 		fmt.Println(err)
 		ResponseError(c, CodeUserOrPasswordNotExsist)

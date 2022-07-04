@@ -75,6 +75,7 @@ func (ctl *Controller) CountTotalHandler(c *gin.Context) {
 //	ResponseSuccess(c, data)
 //	return
 //}
+
 func (ctl *Controller) CountFigureHandler(c *gin.Context) {
 	res, err := service.GetCountBytime()
 	if err != nil {

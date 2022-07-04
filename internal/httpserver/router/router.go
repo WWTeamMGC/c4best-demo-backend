@@ -18,7 +18,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	}
 
 	CountapiRouter := r.Group("/Count")
-	CountapiRouter.Use(middleware.JWTAuthMiddleware())
+	//CountapiRouter.Use(middleware.JWTAuthMiddleware())
 	{
 		CountapiRouter.GET("/detail", ctl.CountDetailHandler)
 		CountapiRouter.GET("/Total", ctl.CountTotalHandler)
