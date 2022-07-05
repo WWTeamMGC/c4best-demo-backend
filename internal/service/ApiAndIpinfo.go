@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/dao/redis"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 )
@@ -19,6 +20,7 @@ func (s *Service) PhasePackage() {
 				return
 			}
 			//存入Api
+			fmt.Println(HttpInfo.Header)
 			api := &model.Api{
 				Url: HttpInfo.UrlPath,
 				IpInfoList: []model.IpInfo{

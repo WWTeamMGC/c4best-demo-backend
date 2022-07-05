@@ -18,7 +18,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 	}
 
 	CountapiRouter := r.Group("/Count")
-	//CountapiRouter.Use(middleware.JWTAuthMiddleware())
+	CountapiRouter.Use(middleware.JWTAuthMiddleware())
 	{
 		CountapiRouter.GET("/ApiDetail", ctl.CountApiDetailHandler)
 		CountapiRouter.GET("/IpDetail", ctl.CountIpDetailHandler)
@@ -30,7 +30,7 @@ func InitRouter(r *gin.Engine, ctl *controller.Controller) {
 
 	//IP/Words的Web查询接口
 	BadApiRouter := r.Group("/BadApi")
-	//BadApiRouter.Use()
+	BadApiRouter.Use(middleware.JWTAuthMiddleware())
 	{
 		//查询BadIP和BadWords
 		BadApiRouter.POST("/Ip", ctl.GetBadIPList)
