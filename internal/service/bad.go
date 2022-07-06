@@ -7,13 +7,17 @@ import (
 
 // FlushBadIp 初始化Bad名单InitBad
 func (s *Service) FlushBadIp() error {
-	service.BadIp = []string{}
+	service.BadIp = []model.BadIpRsp{}
 	ipList, err := mysql.GetAllBadIp()
 	if err != nil {
 		return err
 	}
 	for _, v := range ipList {
-		service.BadIp = append(service.BadIp, v.Ip)
+		service.BadIp = append(service.BadIp, model.BadIpRsp{
+			Ip:      v.Ip,
+			PcMp:    v.PcMp,
+			Address: v.Address,
+		})
 	}
 	return nil
 }

@@ -1,4 +1,4 @@
-debug: false
+debug: true
 http:
   host: 0.0.0.0
   port: 8080

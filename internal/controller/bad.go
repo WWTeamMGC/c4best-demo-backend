@@ -6,6 +6,7 @@ import (
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/gin-gonic/gin"
 	"io"
+	"math/rand"
 	"net/http"
 )
 
@@ -13,8 +14,9 @@ import (
 func (ctl *Controller) SetBadIP(c *gin.Context) {
 	ip := c.PostForm("ip")
 	badip := &model.BadIp{
-		Ip:    ip,
-		Count: 0,
+		Ip:      ip,
+		Address: RandAddress(),
+		PcMp:    PcMp(),
 	}
 	err := ctl.service.SetBadIP(badip)
 	if err != nil {
@@ -47,25 +49,44 @@ func (ctl *Controller) SetBadWords(c *gin.Context) {
 type BadIPListRsp struct {
 	Ip      string `json:"ip"`
 	PcMp    string `json:"pc_mp"`
-	Address string `json:" address"`
+	Address string `json:"address"`
 }
 type BadWordsListRsp struct {
 	Badwords string `json:"word"`
 }
 
+func PcMp() string {
+	PcMplist := make([]string, 2)
+	PcMplist[0] = "PC"
+	PcMplist[1] = "Phone"
+	s := rand.Intn(2)
+	return PcMplist[s]
+}
+func RandAddress() string {
+	PcMplist := make([]string, 6)
+	PcMplist[0] = "成都"
+	PcMplist[1] = "武汉"
+	PcMplist[2] = "沈阳"
+	PcMplist[3] = "广州"
+	PcMplist[4] = "上海"
+	PcMplist[5] = "南宁"
+	s := rand.Intn(6)
+	return PcMplist[s]
+}
+
 // GetBadIPList 返回BadIPList
 func (ctl *Controller) GetBadIPList(c *gin.Context) {
 	var badiplist []BadIPListRsp
-	for i := range ctl.service.BadIp {
+	for _, v := range ctl.service.BadIp {
 		badip := BadIPListRsp{
-			Ip:      ctl.service.BadIp[i],
-			PcMp:    "aaa",
-			Address: "lll",
+			Ip:      v.Ip,
+			PcMp:    v.PcMp,
+			Address: v.Address,
 		}
 		badiplist = append(badiplist, badip)
 	}
 
-	c.JSON(http.StatusOK, gin.H{"badiplist": badiplist})
+	c.JSON(http.StatusOK, gin.H{"badiplist": ctl.service.BadIp})
 }
 
 // GetBadWordsList 返回BadWordsList

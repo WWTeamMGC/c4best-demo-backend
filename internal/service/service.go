@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/Shopify/sarama"
 	"github.com/WWTeamMGC/c4best-demo-backend/internal/config"
+	"github.com/WWTeamMGC/c4best-demo-backend/internal/model"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"sync"
@@ -14,7 +15,7 @@ type Service struct {
 	rds      *redis.Client
 	kafka    sarama.Consumer
 	KfkChan  chan []byte
-	BadIp    []string
+	BadIp    []model.BadIpRsp
 	BadWords []string
 }
 
@@ -31,7 +32,7 @@ func New(cfg *config.Config, db *gorm.DB, rds *redis.Client, kafka sarama.Consum
 			rds:      rds,
 			kafka:    kafka,
 			KfkChan:  make(chan []byte, 1000),
-			BadIp:    []string{},
+			BadIp:    []model.BadIpRsp{},
 			BadWords: []string{},
 		}
 	})
